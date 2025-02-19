@@ -84,13 +84,14 @@ GROUP BY CATEGORY;
 ECT DISTINCT CATEGORY FROM RETAIL_SALES;
 
 -- 7. How many units of each product category were sold and show top most category first?
-SELECT CATEGORY, SUM(QUANTIY) AS TOTAL_UNITS FROM RETAIL_SALES GROUP BY CATEGORY;
+SELECT CATEGORY, SUM(QUANTIY) AS TOTAL_UNITS FROM RETAIL_SALES GROUP BY CATEGORY
+LIMIT 1;
 
 -- 8. Write a SQL query to find the average age of customers who purchased items from the 'Beauty' category.:
 SELECT ROUND(AVG(AGE),2) AS AVERAGE_AGE FROM RETAIL_SALES WHERE CATEGORY='BEAUTY';
 
 -- 9. Write a SQL query to find all transactions where the total_sale is greater than 1000.:
-SELECT ROUND(AVG(AGE),2) AS AVERAGE_AGE FROM RETAIL_SALES WHERE CATEGORY='BEAUTY';
+SELECT * FROM RETAIL_SALES WHERE TOTAL_SALE>1000;
 
 -- 10. Write a SQL query to find the total number of transactions (transaction_id) made by each gender in each category.:
 SELECT CATEGORY, GENDER, COUNT(*) FROM RETAIL_SALES
