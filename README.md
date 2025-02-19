@@ -101,74 +101,122 @@ select count(distinct category) as total_customers from retail_Sales;
 
 The following SQL queries were developed to answer specific business questions:
 
-1. **Write a SQL query to retrieve all columns for sales made on '2022-11-05**:
-```sql
-Select * from retail_sales where sale_date='2022-11-05';
-```
+**1. Write a query to find total revenue generated?**
+SELECT SUM(TOTAL_SALE) AS TOTAL_REVENUE FROM RETAIL_SALES;
 
-2. **Write a SQL query to retrieve all transactions where the category is 'Clothing' and the quantity sold is more than 4 in the month of Nov-2022**:
-```sql
-SELECT 
-  *
-Select * from retail_Sales where category='Clothing' and quantiy >= 4 and to_char(sale_date,'YYYY-MM')='2022-11';
+**2. Write a SQL query to retrieve all columns for sales made on '2022-11-05:**
+SELECT * FROM RETAIL_SALES WHERE SALE_DATE='2022-11-05';
+
+**3. How many total transactions have been recorded?**
+SELECT COUNT(*) AS TOTAL_TRANSACTIONS FROM RETAIL_SALES;
+
+**4. List all unique product categories.**
+SELECT DISTINCT CATEGORY FROM RETAIL_SALES;
+
+**5. Write a SQL query to retrieve all transactions where the category is 'Clothing'.**
+-- and the quantity sold is more than 4 in the month of Nov-2022:
+SELECT * FROM RETAIL_SALES WHERE CATEGORY='CLOTHING' AND QUANTIY >= 4 AND TO_CHAR(SALE_DATE,'YYYY-MM')='2022-11';
 -- OR
-Select * from retail_Sales where category='Clothing' and quantiy >= 4 and sale_date between '2022-11-01' and '2022-11-30';
-```
+SELECT * FROM RETAIL_SALES WHERE CATEGORY='CLOTHING' AND QUANTIY >= 4 AND SALE_DATE BETWEEN '2022-11-01' AND '2022-11-30';
+--SELECT SALE_DATE, TO_CHAR(SALE_DATE,'DD-MM') FROM RETAIL_SALES;
 
-3. **Write a SQL query to calculate the total sales (total_sale) for each category.**:
-```sql
-Select category, sum(total_sale) as total_sale, count(*) as total_orders 
-from retail_sales group by category;
-```
+**6. Write a SQL query to calculate the total sales (total_sale) for each category.:**
+SELECT CATEGORY, SUM(TOTAL_SALE) AS TOTAL_SALE, COUNT(*) AS TOTAL_ORDERS 
+FROM RETAIL_SALES 
+GROUP BY CATEGORY;
+ECT DISTINCT CATEGORY FROM RETAIL_SALES;
 
-4. **Write a SQL query to find the average age of customers who purchased items from the 'Beauty' category.**:
-```sql
-Select round(avg(age),2) as Average_age from retail_Sales where category='Beauty';
-```
+**7. How many units of each product category were sold and show top most category first?**
+SELECT CATEGORY, SUM(QUANTIY) AS TOTAL_UNITS FROM RETAIL_SALES GROUP BY CATEGORY;
 
-5. **Write a SQL query to find all transactions where the total_sale is greater than 1000.**:
-```sql
-Select * from retail_Sales where total_sale>1000;
-```
+**8. Write a SQL query to find the average age of customers who purchased items from the 'Beauty' category.:**
+SELECT ROUND(AVG(AGE),2) AS AVERAGE_AGE FROM RETAIL_SALES WHERE CATEGORY='BEAUTY';
 
-6. **Write a SQL query to find the total number of transactions (transaction_id) made by each gender in each category.**:
-```sql
-Select Category, gender, count(*) from retail_Sales
-group by Category, gender;
-```
+**9. Write a SQL query to find all transactions where the total_sale is greater than 1000.:**
+SELECT ROUND(AVG(AGE),2) AS AVERAGE_AGE FROM RETAIL_SALES WHERE CATEGORY='BEAUTY';
 
-7. **Write a SQL query to calculate the average sale for each month. Find out best selling month in each year**:
-```sql
-Select Year, Month, Average_sale from (
-Select to_char(sale_date, 'YYYY') as Year, to_char(sale_date, 'MM') as Month,  avg(total_sale) as Average_Sale,
-RANK() OVER(PARTITION BY to_char(sale_date, 'YYYY') ORDER BY avg(total_sale) DESC) as rank
-from retail_Sales
-group by to_char(sale_date, 'YYYY'), to_char(sale_date, 'MM')) as
-tb where tb.rank=1;
+**10. Write a SQL query to find the total number of transactions (transaction_id) made by each gender in each category.:**
+SELECT CATEGORY, GENDER, COUNT(*) FROM RETAIL_SALES
+GROUP BY CATEGORY, GENDER;
+
+**11. Which product categories generated the most revenue?**
+SELECT CATEGORY, SUM(TOTAL_SALE) AS TOTAL_REVENUE FROM RETAIL_SALES GROUP BY CATEGORY
+ORDER BY SUM(TOTAL_SALE) DESC LIMIT 1;
+
+**12. Which customer has spent the most money?**
+SELECT CUSTOMER_ID, SUM(TOTAL_SALE) AS TOTAL_AMOUNT_SPENT FROM RETAIL_SALES
+GROUP BY CUSTOMER_ID ORDER BY SUM(TOTAL_SALE) DESC LIMIT 1;
+
+**13. What is the average amount each customer spends?**
+SELECT CUSTOMER_ID, CAST(AVG(TOTAL_SALE) AS INT) AS AVERGAE_AMOUNT_SPENT FROM RETAIL_SALES
+GROUP BY CUSTOMER_ID;
+
+**14. On which day did the highest revenue occur?**
+SELECT SALE_DATE, SUM(TOTAL_SALE) AS TOTAL_REVENUE FROM RETAIL_SALES
+GROUP BY SALE_DATE ORDER BY SUM(TOTAL_SALE) DESC LIMIT 1;
+
+**15. Find transactions made by customers aged between 25 and 35.**
+SELECT * FROM RETAIL_SALES WHERE AGE BETWEEN 25 AND 35;
+
+**16. Show cumulative sales revenue per month.**
+SELECT TO_CHAR(SALE_DATE, 'YYYY-MM') AS YEAR_MONTH, SUM(TOTAL_SALE) AS TOTAL_SALE FROM RETAIL_SALES
+GROUP BY TO_CHAR(SALE_DATE, 'YYYY-MM');
 
 -- OR
 
-Select Year, Month, Average_sale from (
-Select extract(Year from sale_date) as Year, extract(Month from sale_date) as Month,  avg(total_sale) as Average_Sale,
-RANK() OVER(PARTITION BY extract(Year from sale_date) ORDER BY avg(total_sale) DESC) as rank
-from retail_Sales
-group by extract(Year from sale_date), extract(Month from sale_date)) as
-tb where tb.rank=1;
-```
+WITH MONTHLYSALES AS (
+    SELECT TO_CHAR(SALE_DATE, 'YYYY-MM') AS SALE_MONTH, SUM(TOTAL_SALE) AS MONTHLY_SALES
+    FROM RETAIL_SALES
+    GROUP BY SALE_MONTH 
+)
+SELECT SALE_MONTH, MONTHLY_SALES, 
+       SUM(MONTHLY_SALES) OVER (ORDER BY SALE_MONTH) AS TOTAL_SALES_TILL_CURRENT_MONTH
+FROM MONTHLYSALES;
 
-8. **Write a SQL query to find the top 5 customers based on the highest total sales **:
-```sql
-select customer_id, sum(total_sale) as Total_Sale from retail_Sales 
-group by customer_id order by total_Sale desc limit 5;
-```
+**17. Write a SQL query to calculate the average sale for each month. Find out best selling month in each year:**
 
-9. **Write a SQL query to find the number of unique customers who purchased items from each category.**:
-```sql
-Select category, count(distinct customer_id) Customer_count from retail_Sales group by category;
-```
+SELECT YEAR, MONTH, AVERAGE_SALE FROM (
+SELECT TO_CHAR(SALE_DATE, 'YYYY') AS YEAR, TO_CHAR(SALE_DATE, 'MM') AS MONTH,  AVG(TOTAL_SALE) AS AVERAGE_SALE,
+RANK() OVER(PARTITION BY TO_CHAR(SALE_DATE, 'YYYY') ORDER BY AVG(TOTAL_SALE) DESC) AS RANK
+FROM RETAIL_SALES
+GROUP BY TO_CHAR(SALE_DATE, 'YYYY'), TO_CHAR(SALE_DATE, 'MM')) AS
+TB WHERE TB.RANK=1;
 
-10. **Write a SQL query to create each shift and number of orders (Example Morning <12, Afternoon Between 12 & 17, Evening >17)**:
-```sql
+-- OR
+
+SELECT YEAR, MONTH, AVERAGE_SALE FROM (
+SELECT EXTRACT(YEAR FROM SALE_DATE) AS YEAR, EXTRACT(MONTH FROM SALE_DATE) AS MONTH,  AVG(TOTAL_SALE) AS AVERAGE_SALE,
+RANK() OVER(PARTITION BY EXTRACT(YEAR FROM SALE_DATE) ORDER BY AVG(TOTAL_SALE) DESC) AS RANK
+FROM RETAIL_SALES
+GROUP BY EXTRACT(YEAR FROM SALE_DATE), EXTRACT(MONTH FROM SALE_DATE)) AS
+TB WHERE TB.RANK=1;
+
+**18. Write a SQL query to find the top 5 customers based on the highest total sales:**
+SELECT CUSTOMER_ID, SUM(TOTAL_SALE) AS TOTAL_SALE FROM RETAIL_SALES 
+GROUP BY CUSTOMER_ID ORDER BY TOTAL_SALE DESC LIMIT 5;
+
+**19. Find customers who made purchases more than once.**
+SELECT CUSTOMER_ID, COUNT(TRANSACTIONS_ID) AS PURCHASE_COUNT FROM RETAIL_SALES GROUP BY CUSTOMER_ID
+HAVING COUNT(TRANSACTIONS_ID)>1;
+
+**20. Write a SQL query to find the number of unique customers who purchased items from each category.:**
+SELECT CATEGORY, COUNT(DISTINCT CUSTOMER_ID) CUSTOMER_COUNT FROM RETAIL_SALES GROUP BY CATEGORY;
+
+**21. Find the hour of the day with the highest sales transactions.**
+WITH HIGHEST_SALE_HOUR 
+AS(
+SELECT SALE_DATE, TO_CHAR(SALE_TIME, 'HH') AS HOUR, SUM(TOTAL_SALE) AS TOTAL_SALE_AT_HOUR, 
+RANK() OVER(PARTITION BY SALE_DATE ORDER BY SUM(TOTAL_SALE) DESC) AS RANK 
+FROM RETAIL_SALES
+GROUP BY SALE_DATE, TO_CHAR(SALE_TIME, 'HH') 
+ORDER BY SALE_DATE
+) 
+
+SELECT SALE_DATE, HOUR, TOTAL_SALE_AT_HOUR FROM HIGHEST_SALE_HOUR
+WHERE RANK=1;
+
+**22. Write a SQL query to create each shift and number of orders (Example Morning <12, Afternoon Between 12 & 17, Evening >17):**
+
 select shift, count(transactions_id) from(
 Select *, CASE
 when EXTRACT(HOUR from sale_time) < 12 then 'Morning'
@@ -188,7 +236,66 @@ ELSE 'Evening' END AS Shift
 from retail_Sales)
 
 Select shift, count(transactions_id) from shift_hour group by shift;
-```
+
+**23. Group customers into different age segments and analyze their total sales.**
+SELECT AGE, COUNT(DISTINCT CUSTOMER_ID) AS TOTAL_UNIQUE_CUSTOMERS, SUM(TOTAL_SALE) AS TOTAL_SALE
+FROM RETAIL_SALES GROUP BY AGE;
+
+-- OR
+
+SELECT 
+    CASE 
+        WHEN AGE < 18 THEN 'UNDER 18'
+        WHEN AGE BETWEEN 18 AND 24 THEN '18-24'
+        WHEN AGE BETWEEN 25 AND 34 THEN '25-34'
+        WHEN AGE BETWEEN 35 AND 44 THEN '35-44'
+        WHEN AGE BETWEEN 45 AND 54 THEN '45-54'
+        ELSE '55+'
+    END AS AGE_GROUP,
+    COUNT(DISTINCT CUSTOMER_ID) AS UNIQUE_CUSTOMERS,
+    SUM(TOTAL_SALE) AS TOTAL_REVENUE
+FROM RETAIL_SALES
+GROUP BY AGE_GROUP
+ORDER BY AGE_GROUP;
+
+**24. Find customers who have spent more than the average total sales amount.**
+WITH AVG_SALE_AMT 
+AS(
+SELECT AVG(TOTAL_sALE) AS AVG_SALE FROM RETAIL_SALES
+)
+SELECT CUSTOMER_ID, SUM(TOTAL_SALE) AS TOTAL_SALE FROM RETAIL_SALES 
+GROUP BY CUSTOMER_ID
+HAVING SUM(TOTAL_SALE) > (SELECT * FROM AVG_SALE_AMT)
+ORDER BY CUSTOMER_ID;
+
+**25. Calculate sales growth rate month over month.**
+WITH FIND_PREV_MONTH_SALE 
+AS(
+SELECT TO_CHAR(SALE_DATE, 'YYYY-MM') AS YEAR_MONTH, SUM(TOTAL_SALE) AS TOTAL_SALE,
+LAG(SUM(TOTAL_SALE), 1) OVER(ORDER BY TO_CHAR(SALE_DATE, 'YYYY-MM')) AS PREV_MONTH_SALE
+FROM RETAIL_SALES GROUP BY TO_CHAR(SALE_DATE, 'YYYY-MM')
+ORDER BY YEAR_MONTH)
+
+SELECT YEAR_MONTH, TOTAL_SALE, ROUND(cast(((ABS(TOTAL_SALE-PREV_MONTH_SALE)/PREV_MONTH_SALE)*100) AS NUMERIC), 2) AS SALE_GROWTH
+FROM FIND_PREV_MONTH_SALE;
+
+**26. Find products where the price per unit changed over time.**
+WITH PREV_PRICE_FOR_ITEM
+AS(
+SELECT SALE_DATE, SALE_TIME, CATEGORY, PRICE_PER_UNIT, LAG(PRICE_PER_UNIT) OVER(
+PARTITION BY SALE_DATE, CATEGORY ORDER BY SALE_TIME) AS PREVIOUS_PRICE
+FROM RETAIL_SALES
+ORDER BY SALE_DATE, CATEGORY)
+
+SELECT SALE_DATE, SALE_TIME, CATEGORY, PRICE_PER_UNIT, COALESCE(PREVIOUS_PRICE, 0),
+CASE
+	WHEN PRICE_PER_UNIT > PREVIOUS_PRICE THEN 'PRICE INCREASED'
+	WHEN PRICE_PER_UNIT < PREVIOUS_PRICE THEN 'PRICE DECREASED'
+	ELSE 'NO CHANGE IN PRICE' 
+END AS PRICE_TREND
+FROM PREV_PRICE_FOR_ITEM;
+
+
 
 ## Findings
 
