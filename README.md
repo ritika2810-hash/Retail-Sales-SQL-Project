@@ -26,23 +26,21 @@ This project is designed to demonstrate SQL skills and techniques typically used
 CREATE DATABASE sql_project_p1;
 
 -- Create Table
-DROP TABLE IF EXISTS retail_sales;
+DROP TABLE IF EXISTS RETAIL_SALES;
 
-CREATE TABLE retail_sales(
-transactions_id	INT PRIMARY KEY,
-sale_date DATE,
-sale_time TIME,
-customer_id	INT,
-gender VARCHAR(10),
-age	INT,
-category VARCHAR(15),	
-quantiy	INT,
-price_per_unit FLOAT,	
-cogs FLOAT,
-total_sale FLOAT
+CREATE TABLE RETAIL_SALES(
+TRANSACTIONS_ID	INT PRIMARY KEY,
+SALE_DATE DATE,
+SALE_TIME TIME,
+CUSTOMER_ID	INT,
+GENDER VARCHAR(10),
+AGE	INT,
+CATEGORY VARCHAR(15),	
+QUANTIY	INT,
+PRICE_PER_UNIT FLOAT,	
+COGS FLOAT,
+TOTAL_SALE FLOAT
 );
-
-
 ```
 
 ### 2. Data Exploration & Cleaning
@@ -53,48 +51,47 @@ total_sale FLOAT
 - **Null Value Check**: Check for any null values in the dataset and delete records with missing data.
 
 ```sql
+SELECT * FROM RETAIL_SALES LIMIT 10;
 
-select * from retail_sales limit 10;
+SELECT count(*) FROM RETAIL_SALES;
 
-select count(*) from retail_sales;
+SELECT GENDER, COUNT(*) FROM RETAIL_SALES GROUP BY GENDER;
 
-select gender, count(*) from retail_sales group by gender;
+SELECT * FROM RETAIL_SALES WHERE
+TRANSACTIONS_ID	IS NULL OR
+SALE_DATE IS NULL OR
+SALE_TIME IS NULL OR
+CUSTOMER_ID	IS NULL OR
+GENDER IS NULL OR
+--AGE	IS NULL OR
+CATEGORY IS NULL OR
+QUANTIY	IS NULL OR
+PRICE_PER_UNIT IS NULL OR	
+COGS IS NULL OR
+TOTAL_SALE IS NULL;
 
-select * from retail_sales where
-transactions_id	is null or
-sale_date is null or
-sale_time is null or
-customer_id	is null or
-gender is null or
---age	is null or
-category is null or
-quantiy	is null or
-price_per_unit is null or	
-cogs is null or
-total_sale is null;
-
-Delete from retail_sales where
-transactions_id	is null or
-sale_date is null or
-sale_time is null or
-customer_id	is null or
-gender is null or
---age	is null or
-category is null or
-quantiy	is null or
-price_per_unit is null or	
-cogs is null or
-total_sale is null;
+DELETE FROM RETAIL_SALES WHERE
+TRANSACTIONS_ID	IS NULL OR
+SALE_DATE IS NULL OR
+SALE_TIME IS NULL OR
+CUSTOMER_ID	IS NULL OR
+GENDER IS NULL OR
+--AGE	IS NULL OR
+CATEGORY IS NULL OR
+QUANTIY	IS NULL OR
+PRICE_PER_UNIT IS NULL OR	
+COGS IS NULL OR
+TOTAL_SALE IS NULL;
 
 --Data Exploration
 -- How many sales we have?
-select count(*) as total_Sales from retail_sales;
+SELECT COUNT(*) AS TOTAL_SALES FROM RETAIL_SALES;
 
 --How many unique customers we have?
-select count(distinct customer_id) as total_customers from retail_Sales;
+SELECT COUNT(DISTINCT CUSTOMER_ID) AS TOTAL_CUSTOMERS FROM RETAIL_SALES;
 
 --How many unique category we have?
-select count(distinct category) as total_customers from retail_Sales;
+SELECT COUNT(DISTINCT CATEGORY) AS TOTAL_CUSTOMERS FROM RETAIL_SALES;
 ```
 
 ### 3. Data Analysis & Findings
