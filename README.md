@@ -102,10 +102,14 @@ select count(distinct category) as total_customers from retail_Sales;
 The following SQL queries were developed to answer specific business questions:
 
 **1. Write a query to find total revenue generated?**
+```
 SELECT SUM(TOTAL_SALE) AS TOTAL_REVENUE FROM RETAIL_SALES;
+```
 
 **2. Write a SQL query to retrieve all columns for sales made on '2022-11-05:**
+```
 SELECT * FROM RETAIL_SALES WHERE SALE_DATE='2022-11-05';
+```
 
 **3. How many total transactions have been recorded?**
 SELECT COUNT(*) AS TOTAL_TRANSACTIONS FROM RETAIL_SALES;
