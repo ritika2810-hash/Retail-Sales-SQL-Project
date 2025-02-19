@@ -254,25 +254,26 @@ WHERE RANK=1;
 
 **22. Write a SQL query to create each shift and number of orders (Example Morning <12, Afternoon Between 12 & 17, Evening >17):**
 ```sql
-select shift, count(transactions_id) from(
-Select *, CASE
-when EXTRACT(HOUR from sale_time) < 12 then 'Morning'
-WHEN EXTRACT(HOUR from sale_time) between 12 and 17 THEN 'Afternoon'
-ELSE 'Evening' END AS Shift
-from retail_Sales)
-group by shift;
+SELECT SHIFT, COUNT(TRANSACTIONS_ID) FROM(
+SELECT *, CASE
+WHEN EXTRACT(HOUR FROM SALE_TIME) < 12 THEN 'MORNING'
+WHEN EXTRACT(HOUR FROM SALE_TIME) BETWEEN 12 AND 17 THEN 'AFTERNOON'
+ELSE 'EVENING' END AS SHIFT
+FROM RETAIL_SALES)
+GROUP BY SHIFT;
 
 --OR
 
-With shift_hour
+WITH SHIFT_HOUR
 AS(
-Select *, CASE
-when EXTRACT(HOUR from sale_time) < 12 then 'Morning'
-WHEN EXTRACT(HOUR from sale_time) between 12 and 17 THEN 'Afternoon'
-ELSE 'Evening' END AS Shift
-from retail_Sales)
+SELECT *, CASE
+WHEN EXTRACT(HOUR FROM SALE_TIME) < 12 THEN 'MORNING'
+WHEN EXTRACT(HOUR FROM SALE_TIME) BETWEEN 12 AND 17 THEN 'AFTERNOON'
+ELSE 'EVENING' END AS SHIFT
+FROM RETAIL_SALES)
 
-Select shift, count(transactions_id) from shift_hour group by shift;
+SELECT SHIFT, COUNT(TRANSACTIONS_ID) FROM SHIFT_HOUR GROUP BY SHIFT;
+
 ```
 
 **23. Group customers into different age segments and analyze their total sales.**
