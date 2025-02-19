@@ -102,67 +102,93 @@ select count(distinct category) as total_customers from retail_Sales;
 The following SQL queries were developed to answer specific business questions:
 
 **1. Write a query to find total revenue generated?**
-```
+```sql
 SELECT SUM(TOTAL_SALE) AS TOTAL_REVENUE FROM RETAIL_SALES;
 ```
 
 **2. Write a SQL query to retrieve all columns for sales made on '2022-11-05:**
-```
+```sql
 SELECT * FROM RETAIL_SALES WHERE SALE_DATE='2022-11-05';
 ```
 
 **3. How many total transactions have been recorded?**
+```sql
 SELECT COUNT(*) AS TOTAL_TRANSACTIONS FROM RETAIL_SALES;
+```
 
 **4. List all unique product categories.**
+```sql
 SELECT DISTINCT CATEGORY FROM RETAIL_SALES;
+```
 
-**5. Write a SQL query to retrieve all transactions where the category is 'Clothing'.**
--- and the quantity sold is more than 4 in the month of Nov-2022:
+**5. Write a SQL query to retrieve all transactions where the category is 'Clothing' and the quantity sold is more than 4 in the month of Nov-2022:**
+```sql
 SELECT * FROM RETAIL_SALES WHERE CATEGORY='CLOTHING' AND QUANTIY >= 4 AND TO_CHAR(SALE_DATE,'YYYY-MM')='2022-11';
 -- OR
 SELECT * FROM RETAIL_SALES WHERE CATEGORY='CLOTHING' AND QUANTIY >= 4 AND SALE_DATE BETWEEN '2022-11-01' AND '2022-11-30';
 --SELECT SALE_DATE, TO_CHAR(SALE_DATE,'DD-MM') FROM RETAIL_SALES;
+```
 
 **6. Write a SQL query to calculate the total sales (total_sale) for each category.:**
+```sql
 SELECT CATEGORY, SUM(TOTAL_SALE) AS TOTAL_SALE, COUNT(*) AS TOTAL_ORDERS 
 FROM RETAIL_SALES 
 GROUP BY CATEGORY;
 ECT DISTINCT CATEGORY FROM RETAIL_SALES;
+```
 
 **7. How many units of each product category were sold and show top most category first?**
-SELECT CATEGORY, SUM(QUANTIY) AS TOTAL_UNITS FROM RETAIL_SALES GROUP BY CATEGORY;
+```sql
+SELECT CATEGORY, SUM(QUANTIY) AS TOTAL_UNITS FROM RETAIL_SALES GROUP BY CATEGORY DESC LIMIT 1;
+```
 
 **8. Write a SQL query to find the average age of customers who purchased items from the 'Beauty' category.:**
+```sql
 SELECT ROUND(AVG(AGE),2) AS AVERAGE_AGE FROM RETAIL_SALES WHERE CATEGORY='BEAUTY';
+```
 
 **9. Write a SQL query to find all transactions where the total_sale is greater than 1000.:**
-SELECT ROUND(AVG(AGE),2) AS AVERAGE_AGE FROM RETAIL_SALES WHERE CATEGORY='BEAUTY';
+```sql
+SELECT * FROM RETAIL_SALES WHERE TOTAL_SALE>1000;
+```
 
 **10. Write a SQL query to find the total number of transactions (transaction_id) made by each gender in each category.:**
+```sql
 SELECT CATEGORY, GENDER, COUNT(*) FROM RETAIL_SALES
 GROUP BY CATEGORY, GENDER;
+```
 
 **11. Which product categories generated the most revenue?**
+```sql
 SELECT CATEGORY, SUM(TOTAL_SALE) AS TOTAL_REVENUE FROM RETAIL_SALES GROUP BY CATEGORY
 ORDER BY SUM(TOTAL_SALE) DESC LIMIT 1;
+```
 
 **12. Which customer has spent the most money?**
+```sql
 SELECT CUSTOMER_ID, SUM(TOTAL_SALE) AS TOTAL_AMOUNT_SPENT FROM RETAIL_SALES
 GROUP BY CUSTOMER_ID ORDER BY SUM(TOTAL_SALE) DESC LIMIT 1;
+```
 
 **13. What is the average amount each customer spends?**
+```sql
 SELECT CUSTOMER_ID, CAST(AVG(TOTAL_SALE) AS INT) AS AVERGAE_AMOUNT_SPENT FROM RETAIL_SALES
 GROUP BY CUSTOMER_ID;
+```
 
 **14. On which day did the highest revenue occur?**
+```sql
 SELECT SALE_DATE, SUM(TOTAL_SALE) AS TOTAL_REVENUE FROM RETAIL_SALES
 GROUP BY SALE_DATE ORDER BY SUM(TOTAL_SALE) DESC LIMIT 1;
+```
 
 **15. Find transactions made by customers aged between 25 and 35.**
+```sql
 SELECT * FROM RETAIL_SALES WHERE AGE BETWEEN 25 AND 35;
+```
 
 **16. Show cumulative sales revenue per month.**
+```sql
 SELECT TO_CHAR(SALE_DATE, 'YYYY-MM') AS YEAR_MONTH, SUM(TOTAL_SALE) AS TOTAL_SALE FROM RETAIL_SALES
 GROUP BY TO_CHAR(SALE_DATE, 'YYYY-MM');
 
@@ -176,9 +202,10 @@ WITH MONTHLYSALES AS (
 SELECT SALE_MONTH, MONTHLY_SALES, 
        SUM(MONTHLY_SALES) OVER (ORDER BY SALE_MONTH) AS TOTAL_SALES_TILL_CURRENT_MONTH
 FROM MONTHLYSALES;
+```
 
 **17. Write a SQL query to calculate the average sale for each month. Find out best selling month in each year:**
-
+```sql
 SELECT YEAR, MONTH, AVERAGE_SALE FROM (
 SELECT TO_CHAR(SALE_DATE, 'YYYY') AS YEAR, TO_CHAR(SALE_DATE, 'MM') AS MONTH,  AVG(TOTAL_SALE) AS AVERAGE_SALE,
 RANK() OVER(PARTITION BY TO_CHAR(SALE_DATE, 'YYYY') ORDER BY AVG(TOTAL_SALE) DESC) AS RANK
@@ -194,19 +221,27 @@ RANK() OVER(PARTITION BY EXTRACT(YEAR FROM SALE_DATE) ORDER BY AVG(TOTAL_SALE) D
 FROM RETAIL_SALES
 GROUP BY EXTRACT(YEAR FROM SALE_DATE), EXTRACT(MONTH FROM SALE_DATE)) AS
 TB WHERE TB.RANK=1;
+```
 
 **18. Write a SQL query to find the top 5 customers based on the highest total sales:**
+```sql
 SELECT CUSTOMER_ID, SUM(TOTAL_SALE) AS TOTAL_SALE FROM RETAIL_SALES 
 GROUP BY CUSTOMER_ID ORDER BY TOTAL_SALE DESC LIMIT 5;
+```
 
 **19. Find customers who made purchases more than once.**
+```sql
 SELECT CUSTOMER_ID, COUNT(TRANSACTIONS_ID) AS PURCHASE_COUNT FROM RETAIL_SALES GROUP BY CUSTOMER_ID
 HAVING COUNT(TRANSACTIONS_ID)>1;
+```
 
 **20. Write a SQL query to find the number of unique customers who purchased items from each category.:**
+```sql
 SELECT CATEGORY, COUNT(DISTINCT CUSTOMER_ID) CUSTOMER_COUNT FROM RETAIL_SALES GROUP BY CATEGORY;
+```
 
 **21. Find the hour of the day with the highest sales transactions.**
+```sql
 WITH HIGHEST_SALE_HOUR 
 AS(
 SELECT SALE_DATE, TO_CHAR(SALE_TIME, 'HH') AS HOUR, SUM(TOTAL_SALE) AS TOTAL_SALE_AT_HOUR, 
@@ -218,9 +253,10 @@ ORDER BY SALE_DATE
 
 SELECT SALE_DATE, HOUR, TOTAL_SALE_AT_HOUR FROM HIGHEST_SALE_HOUR
 WHERE RANK=1;
+```
 
 **22. Write a SQL query to create each shift and number of orders (Example Morning <12, Afternoon Between 12 & 17, Evening >17):**
-
+```sql
 select shift, count(transactions_id) from(
 Select *, CASE
 when EXTRACT(HOUR from sale_time) < 12 then 'Morning'
@@ -240,8 +276,10 @@ ELSE 'Evening' END AS Shift
 from retail_Sales)
 
 Select shift, count(transactions_id) from shift_hour group by shift;
+```
 
 **23. Group customers into different age segments and analyze their total sales.**
+```sql
 SELECT AGE, COUNT(DISTINCT CUSTOMER_ID) AS TOTAL_UNIQUE_CUSTOMERS, SUM(TOTAL_SALE) AS TOTAL_SALE
 FROM RETAIL_SALES GROUP BY AGE;
 
@@ -261,8 +299,10 @@ SELECT
 FROM RETAIL_SALES
 GROUP BY AGE_GROUP
 ORDER BY AGE_GROUP;
+```
 
 **24. Find customers who have spent more than the average total sales amount.**
+```sql
 WITH AVG_SALE_AMT 
 AS(
 SELECT AVG(TOTAL_sALE) AS AVG_SALE FROM RETAIL_SALES
@@ -282,8 +322,10 @@ ORDER BY YEAR_MONTH)
 
 SELECT YEAR_MONTH, TOTAL_SALE, ROUND(cast(((ABS(TOTAL_SALE-PREV_MONTH_SALE)/PREV_MONTH_SALE)*100) AS NUMERIC), 2) AS SALE_GROWTH
 FROM FIND_PREV_MONTH_SALE;
+```
 
 **26. Find products where the price per unit changed over time.**
+```sql
 WITH PREV_PRICE_FOR_ITEM
 AS(
 SELECT SALE_DATE, SALE_TIME, CATEGORY, PRICE_PER_UNIT, LAG(PRICE_PER_UNIT) OVER(
@@ -298,8 +340,7 @@ CASE
 	ELSE 'NO CHANGE IN PRICE' 
 END AS PRICE_TREND
 FROM PREV_PRICE_FOR_ITEM;
-
-
+```
 
 ## Findings
 
